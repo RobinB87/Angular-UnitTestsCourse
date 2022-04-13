@@ -58,9 +58,21 @@ describe("HeroesComponent", () => {
 
       component.delete(HEROES[2]);
 
+      // with toHaveBeenCalledWith you ensure that this method has been called
+      // toHaveBeenCalledWith can provide a parameter
       expect(mockHeroService.deleteHero).toHaveBeenCalledWith(HEROES[2]);
     });
 
-    it("should subscribe to the deleteHero call", () => {});
+    it("should subscribe to the deleteHero call", () => {
+      mockHeroService.deleteHero.and.returnValue(of(true));
+
+      const spyObj = spyOn(mockHeroService.deleteHero(), "subscribe");
+
+      component.heroes = HEROES;
+
+      component.delete(HEROES[2]);
+
+      expect(spyObj).toHaveBeenCalled();
+    });
   });
 });
