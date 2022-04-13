@@ -81,4 +81,32 @@ describe("HeroesComponent (deep tests)", () => {
       HEROES[HERO_INDEX]
     );
   });
+
+  // just tell the child component to raise the event
+  // and test if the parent's component is listening to that event
+  // and responding to it correctly
+  it(`should call heroService.deleteHero when the Hero Component is told
+  to raise the delete event`, () => {
+    const HERO_INDEX = 0;
+
+    // to watch and see if a method is called, use jasmine spyOn
+    spyOn(fixture.componentInstance, "delete");
+    mockHeroService.getHeroes.and.returnValue(of(HEROES));
+
+    fixture.detectChanges();
+
+    const heroComponentsDEs = fixture.debugElement.queryAll(
+      By.directive(HeroComponent)
+    );
+
+    // grab the hero components class and 'help it understand it is a hero component' by casting
+    // in this case you can emit undefined, as the template handles the delete with it's own ngFor binding
+    (<HeroComponent>(
+      heroComponentsDEs[HERO_INDEX].componentInstance
+    )).delete.emit(undefined);
+
+    expect(fixture.componentInstance.delete).toHaveBeenCalledWith(
+      HEROES[HERO_INDEX]
+    );
+  });
 });
