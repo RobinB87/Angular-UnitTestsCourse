@@ -54,4 +54,31 @@ describe("HeroesComponent (deep tests)", () => {
       expect(heroComponentsDEs[i].componentInstance.hero).toEqual(HEROES[i]);
     }
   });
+
+  it(`should call heroService.deleteHero when the Hero Component's
+  delete button is clicked`, () => {
+    const HERO_INDEX = 0;
+
+    // to watch and see if a method is called, use jasmine spyOn
+    spyOn(fixture.componentInstance, "delete");
+
+    mockHeroService.getHeroes.and.returnValue(of(HEROES));
+
+    fixture.detectChanges();
+
+    const heroComponentsDEs = fixture.debugElement.queryAll(
+      By.directive(HeroComponent)
+    );
+
+    // just want the code to be able to call stopPropagation as this occurs in the method as well,
+    // and we do not want the test to error out.
+    heroComponentsDEs[HERO_INDEX].query(By.css("button")).triggerEventHandler(
+      "click",
+      { stopPropagation: () => {} }
+    );
+
+    expect(fixture.componentInstance.delete).toHaveBeenCalledWith(
+      HEROES[HERO_INDEX]
+    );
+  });
 });
