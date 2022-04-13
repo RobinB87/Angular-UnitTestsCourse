@@ -1,5 +1,6 @@
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 
 import { HeroComponent } from "./hero.component";
 
@@ -39,7 +40,7 @@ describe("HeroComponent (shallow tests)", () => {
     expect(fixture.componentInstance.hero.name).toEqual("SuperDude");
   });
 
-  it("should render the hero name in an anchor tag <a></a>", () => {
+  it("should render the hero name in an anchor tag <a></a> - by native element", () => {
     fixture.componentInstance.hero = { id: 1, name: "SuperDude", strength: 3 };
 
     // to test DOM element use nativeElement that represents the container for the template
@@ -54,5 +55,19 @@ describe("HeroComponent (shallow tests)", () => {
     expect(fixture.nativeElement.querySelector("a").textContent).toContain(
       "SuperDude"
     );
+  });
+
+  it("should render the hero name in an anchor tag <a></a> - by debug element", () => {
+    fixture.componentInstance.hero = { id: 1, name: "SuperDude", strength: 3 };
+    fixture.detectChanges();
+
+    // debug element is like the native element, but it is more of a wrapper which applies on the root of the template
+    // this might feel more familiar when you are used to jQuery
+    // the debug element is a wrapper around the actual DOM node
+    // similar to the fixture being a wrapper around a component
+    // in this case does not really matter if you use debug or native
+    // but debugElement can for example access a routerLink directive
+    let deAnchor = fixture.debugElement.query(By.css("a"));
+    expect(deAnchor.nativeElement.textContent).toContain("SuperDude");
   });
 });
