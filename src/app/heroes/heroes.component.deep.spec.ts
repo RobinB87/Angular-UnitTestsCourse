@@ -1,11 +1,41 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { Directive, Input } from "@angular/core";
 
 import { HeroService } from "../hero.service";
 import { HeroesComponent } from "./heroes.component";
 import { HeroComponent } from "../hero/hero.component";
 import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
+
+// RouterLinkDirectiveStub: add to TestBed declarations
+// use it to configure routerLink correctly and not use NO_ERRORS_SCHEMA
+@Directive({
+  // use [routerLink] as selector, so it will look for the attribute routerLink
+  selector: "[routerLink]",
+  // in order to have this onClick method fired when the anchor tag is clicked
+  // we will listen to a host event:
+  //    we listen for a click event (the name of the prop)
+  //    the value is the method we are calling
+  host: { "(click)": "onClick()" },
+})
+export class RouterLinkDirectiveStub {
+  // the stub itself needs to take in the parameter that is set,
+  // the value of the routerlink attribute
+  @Input("routerLink") linkParams: any;
+
+  // we want to watch the click event on the DOM element that this click event is on
+  // when it is fired, we want to capture the fact that is was clicked
+  // and store it with the routerLinks path (the string value of the routerLink attribute in the hero.component.html)
+  // we want to know what that value is actually set to, so we can determine if it was configured correctly
+  //
+  // if navigatedTo is null, it has not been clicked
+  // and if it is clicked you can see if the value is correct
+  navigatedTo: any = null;
+
+  onClick(): void {
+    this.navigatedTo = this.linkParams;
+  }
+}
 
 // normally you would not create seperate files for shallow and deep tests
 describe("HeroesComponent (deep tests)", () => {
@@ -27,9 +57,8 @@ describe("HeroesComponent (deep tests)", () => {
     ]);
 
     TestBed.configureTestingModule({
-      declarations: [HeroesComponent, HeroComponent],
+      declarations: [HeroesComponent, HeroComponent, RouterLinkDirectiveStub],
       providers: [{ provide: HeroService, useValue: mockHeroService }],
-      schemas: [NO_ERRORS_SCHEMA],
     });
 
     fixture = TestBed.createComponent(HeroesComponent);
