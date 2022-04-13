@@ -175,4 +175,25 @@ describe("HeroesComponent (deep tests)", () => {
 
     expect(heroText).toContain(name);
   });
+
+  it("should have the correct route for the first hero", () => {
+    mockHeroService.getHeroes.and.returnValue(of(HEROES));
+    fixture.detectChanges();
+
+    // first id is 1
+    const heroComponents = fixture.debugElement.queryAll(
+      By.directive(HeroComponent)
+    );
+
+    // get routerlink directive for first hero
+    // get debug element for the anchor tag that has the routerlink on it
+    let routerLink = heroComponents[0]
+      .query(By.directive(RouterLinkDirectiveStub))
+      // now we want the handle to the actual class of the directive (the class with the navigatedTo property)
+      .injector.get(RouterLinkDirectiveStub);
+
+    heroComponents[0].query(By.css("a")).triggerEventHandler("click", null);
+
+    expect(routerLink.navigatedTo).toBe("/detail/1");
+  });
 });
