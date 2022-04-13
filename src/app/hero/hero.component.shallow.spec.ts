@@ -28,7 +28,10 @@ describe("HeroComponent (shallow tests)", () => {
     // this test does not need to detect changes, but we add it in anyway
     // this gives a warning in the console of the browser: this is because the template has a routerLink
     // routerLink is part of the routerModule, but we haven't brought in this routerModule in our testbed
-    fixture.detectChanges();
+    // fixture.detectChanges();
+
+    // when you want to not try to validate the template (due to routerLink error), you could add to the testBed:
+    // schemas: [NO_ERRORS_SCHEMA],
 
     expect(fixture.componentInstance.hero.name).toEqual("SuperDude");
   });
