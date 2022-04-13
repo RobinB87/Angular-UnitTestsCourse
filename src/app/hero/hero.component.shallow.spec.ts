@@ -1,8 +1,10 @@
+import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { HeroComponent } from "./hero.component";
 
 // name shallow is just for extra explanation in this project
+// the real power of an integration test is to test the template as well, next to the component
 describe("HeroComponent (shallow tests)", () => {
   // by strongly typing you can use the methods
   let fixture: ComponentFixture<HeroComponent>;
@@ -13,6 +15,7 @@ describe("HeroComponent (shallow tests)", () => {
     // the same properties of a normal module can be used, in this case only the declarations
     TestBed.configureTestingModule({
       declarations: [HeroComponent],
+      schemas: [NO_ERRORS_SCHEMA],
     });
 
     // returns a component fixture: this is basically a wrapper for a component
@@ -34,5 +37,22 @@ describe("HeroComponent (shallow tests)", () => {
     // schemas: [NO_ERRORS_SCHEMA],
 
     expect(fixture.componentInstance.hero.name).toEqual("SuperDude");
+  });
+
+  it("should render the hero name in an anchor tag <a></a>", () => {
+    fixture.componentInstance.hero = { id: 1, name: "SuperDude", strength: 3 };
+
+    // to test DOM element use nativeElement that represents the container for the template
+    // is standard html dom element (same api you would use in plain old javascript - querySelector)
+    // code below gets all text between <a></a>: hence a space and the name
+    // toEqual would be a bit to brittle, as you might change the text a bit, for example add a ! or a space
+
+    // to tell angular to actually implement the bindings {{hero.id}} and {{hero.name}}
+    // those will not get updated untill changeDetection runs! (example before)
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector("a").textContent).toContain(
+      "SuperDude"
+    );
   });
 });
