@@ -109,4 +109,41 @@ describe("HeroesComponent (deep tests)", () => {
       HEROES[HERO_INDEX]
     );
   });
+
+  it("should add a new hero to the hero list when the add button is clicked", () => {
+    mockHeroService.getHeroes.and.returnValue(of(HEROES));
+    fixture.detectChanges();
+    const name = "Mr. Ice";
+
+    mockHeroService.addHero.and.returnValue(
+      of({ id: 5, name: name, strength: 4 })
+    );
+
+    // use nativeElement so we have a reference to the underlying DOM element,
+    // which we will need to set the value later on
+    const inputElement = fixture.debugElement.query(
+      By.css("input")
+    ).nativeElement;
+
+    // there are several buttons in this template (each hero has one)
+    // we know the very first one is the add button
+    // we do not want the underlying DOM element, but just the button, so no use of nativeElement
+    const addButton = fixture.debugElement.queryAll(By.css("button"))[0];
+
+    // simulate typing Mr. Ice in the input box
+    inputElement.value = name;
+
+    // pass in null for the object.
+    // In this case the eventObj can be null, as we do not use it in the template, we call add heroName
+    addButton.triggerEventHandler("click", null);
+
+    // angular does not automatically update html when underlying values are changed,
+    // we have to trigger it again
+    fixture.detectChanges();
+
+    const heroText = fixture.debugElement.query(By.css("ul")).nativeElement
+      .textContent;
+
+    expect(heroText).toContain(name);
+  });
 });
