@@ -6,7 +6,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
-    "test": "ng test"
+    "test": "ng test",
+    "create-test-report": "ng test --no-watch --code-coverage"
   },
   "keywords": [],
   "author": "",
