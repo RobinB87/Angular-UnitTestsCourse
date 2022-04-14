@@ -32,15 +32,27 @@ export class HeroDetailComponent implements OnInit {
     this.location.back();
   }
 
+  // save(): void {
+  //   debounce(
+  //     () => {
+  //       this.heroService.updateHero(this.hero).subscribe(() => this.goBack());
+  //     },
+  //     250,
+  //     false
+  //   )();
+  // }
+
   save(): void {
-    debounce(
-      () => {
-        this.heroService.updateHero(this.hero).subscribe(() => this.goBack());
-      },
-      250,
-      false
-    )();
+    someThirdPartyPromise().then(() => {
+      this.heroService.updateHero(this.hero).subscribe(() => this.goBack());
+    });
   }
+}
+
+function someThirdPartyPromise() {
+  return new Promise((resolve) => {
+    resolve(null);
+  });
 }
 
 function debounce(func, wait, immediate) {

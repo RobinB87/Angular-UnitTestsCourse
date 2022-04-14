@@ -1,9 +1,4 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  flush,
-  TestBed,
-} from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { FormsModule } from "@angular/forms";
@@ -67,15 +62,28 @@ describe("HeroDetailComponent", () => {
   // with fakeAsync and tick you avoid 'really' waiting 250 ms
   // with flush you tell to look at the 'zone' for any tasks that are waiting
   // if there are any, then fastforward the clock until those tasks are finished
-  it("should call updateHero when save is called", fakeAsync(() => {
+  // it("should call updateHero when save is called", fakeAsync(() => {
+  //   // empty object as code ignores return value
+  //   mockHeroService.updateHero.and.returnValue(of({}));
+  //   fixture.detectChanges();
+
+  //   fixture.componentInstance.save();
+  //   // tick(250);
+  //   flush();
+
+  //   expect(mockHeroService.updateHero).toHaveBeenCalled();
+  // }));
+
+  // fakeAsync is preferred, but this could be used as well, eg when you have a promise method
+  it("should call updateHero when save is called", waitForAsync(() => {
     // empty object as code ignores return value
     mockHeroService.updateHero.and.returnValue(of({}));
     fixture.detectChanges();
 
     fixture.componentInstance.save();
-    // tick(250);
-    flush();
 
-    expect(mockHeroService.updateHero).toHaveBeenCalled();
+    fixture.whenStable().then(() => {
+      expect(mockHeroService.updateHero).toHaveBeenCalled();
+    });
   }));
 });
