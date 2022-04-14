@@ -58,4 +58,19 @@ describe("HeroDetailComponent", () => {
       "SUPERDUDE"
     );
   });
+
+  // done param to our callback (second argument of it function)
+  // now jasmine nows it is async
+  it("should call updateHero when save is called", (done) => {
+    // empty object as code ignores return value
+    mockHeroService.updateHero.and.returnValue(of({}));
+    fixture.detectChanges();
+
+    fixture.componentInstance.save();
+
+    setTimeout(() => {
+      expect(mockHeroService.updateHero).toHaveBeenCalled();
+      done();
+    }, 300);
+  });
 });

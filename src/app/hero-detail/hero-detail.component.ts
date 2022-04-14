@@ -49,6 +49,7 @@ function debounce(func, wait, immediate) {
   return function () {
     var context = this,
       args = arguments;
+
     var later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
